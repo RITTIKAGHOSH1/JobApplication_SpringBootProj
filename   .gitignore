@@ -1,0 +1,34 @@
+# Maven
+target/
+
+
+# IntelliJ IDEA
+.idea/
+*.iml
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Spring Boot configs
+application.properties
+application.yml
+
+# --- Docker ---
+# Ignore intermediate Docker build files
+**/.dockerignore
+**/Dockerfile~
+docker-compose.override.yml
+docker-compose.dev.yml
+# If you store local volumes or bind mounts, ignore them too:
+volumes/
+tmp/
+.env.local
