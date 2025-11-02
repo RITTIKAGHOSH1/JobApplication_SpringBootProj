@@ -1,5 +1,8 @@
 package in.com.redR.JobApplication.review;
 
+import in.com.redR.JobApplication.ExceptionHandler.CompanyIdNotFoundException;
+import in.com.redR.JobApplication.ExceptionHandler.JobIdNotFoundException;
+import in.com.redR.JobApplication.ExceptionHandler.ReviewIdNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -24,16 +27,15 @@ public class ReviewController {
     //get a particular review of a company
     @GetMapping("/{reviewId}")
     public ResponseEntity<Review> getReviewById(@PathVariable Long companyId, @PathVariable Long reviewId){
-        return  new ResponseEntity<>(reviewService.getReviewByReviewId(companyId,reviewId),
-                HttpStatus.OK);
+        Review review=reviewService.getReviewByReviewId(companyId,reviewId);
+        if(review!=null) return  new ResponseEntity<>(review, HttpStatus.OK);
+        throw new CompanyIdNotFoundException("Company Id- " + companyId + " not found",companyId);
     }
     @PostMapping
     public ResponseEntity<String> addReview(@RequestBody Review review, @PathVariable Long companyId){
-       boolean isReviewAdded= reviewService.addReview(review,companyId);
-       if(isReviewAdded){
-        return new ResponseEntity<>("Review Added",HttpStatus.OK);
-    }
-        return new ResponseEntity<>("Review not added",HttpStatus.NOT_FOUND);
+    boolean isReviewAdded= reviewService.addReview(review,companyId);
+       if(isReviewAdded) return new ResponseEntity<>("Review Added",HttpStatus.OK);
+       return new ResponseEntity<>("Review not added",HttpStatus.NOT_FOUND);
     }
     @PutMapping("/{reviewId}")
     public ResponseEntity<String> updateReview(@RequestBody Review review,
@@ -42,7 +44,7 @@ public class ReviewController {
         if(isReviewUpdated){
             return new ResponseEntity<>("Review updated",HttpStatus.OK);
         }
-        return new ResponseEntity<>("Review not found",HttpStatus.NOT_FOUND);
+        throw new ReviewIdNotFoundException("Given Review Id not found");
     }
 
     @DeleteMapping("/{reviewId}")
@@ -51,7 +53,7 @@ public class ReviewController {
         if(isReviewdeleted){
             return new ResponseEntity<>("Review deleted",HttpStatus.OK);
         }
-        return new ResponseEntity<>("Review not found",HttpStatus.NOT_FOUND);
+        throw new ReviewIdNotFoundException("Given Review Id not found");
     }
 
 }

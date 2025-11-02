@@ -27,16 +27,6 @@ public class Job {
     public void setCompany(Company company) {
         this.company = company;
     }
-  public Job(){  }
-
-   /* public Job(Long id, String title, String description, String minSalary, String maxSalary, String location) {
-        this.id = id;
-        this.title = title;
-        this.description = description;
-        this.minSalary = minSalary;
-        this.maxSalary = maxSalary;
-        this.location = location;
-    }*/
 
     public Long getId() {
         return id;

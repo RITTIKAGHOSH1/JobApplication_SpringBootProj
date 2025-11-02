@@ -1,5 +1,8 @@
 package in.com.redR.JobApplication.review.impl;
 
+import in.com.redR.JobApplication.ExceptionHandler.CompanyIdNotFoundException;
+import in.com.redR.JobApplication.ExceptionHandler.NoCompanyFoundException;
+import in.com.redR.JobApplication.ExceptionHandler.ReviewIdNotFoundException;
 import in.com.redR.JobApplication.company.Company;
 import in.com.redR.JobApplication.company.CompanyService;
 import in.com.redR.JobApplication.review.Review;
@@ -28,7 +31,7 @@ public class ReviewServiceImpl implements ReviewService {
             reviewRepository.save(review);
             return true;
         }
-        return false;
+        throw new CompanyIdNotFoundException("Company Id- " + companyId + " not found",companyId);
     }
 
     @Override
@@ -46,7 +49,9 @@ public class ReviewServiceImpl implements ReviewService {
    @Override
     public boolean updateReviewByIds(Long companyId, Long reviewId, Review updatedReview) {
         List<Review> reviews= reviewRepository.findByCompanyId(companyId);
-        for(Review rev:reviews){
+        if(reviews.isEmpty())
+            throw new CompanyIdNotFoundException("Company Id- " + companyId + " not found",companyId);
+       for(Review rev:reviews){
             if(rev.getId().equals(reviewId)){
                 rev.setCompany(updatedReview.getCompany());
                 rev.setRating(updatedReview.getRating());
@@ -63,7 +68,9 @@ public class ReviewServiceImpl implements ReviewService {
     @Override
     public List<Review> getAlLReview(Long companyId) {
       List<Review> reviews= reviewRepository.findByCompanyId(companyId);
-        return reviews;
+      if(!reviews.isEmpty())
+          return reviews;
+      throw new NoCompanyFoundException("No Company Present in database");
     }
 
     @Override
@@ -73,6 +80,7 @@ public class ReviewServiceImpl implements ReviewService {
             if(review.getId().equals(reviewId)){
                 return review;
             }
+            throw new ReviewIdNotFoundException("Given Review Id not found");
         }
         return null;
     }

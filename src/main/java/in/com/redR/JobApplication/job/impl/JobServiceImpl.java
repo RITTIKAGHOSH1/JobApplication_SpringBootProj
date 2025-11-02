@@ -5,6 +5,9 @@ import in.com.redR.JobApplication.company.CompanyService;
 import in.com.redR.JobApplication.job.Job;
 import in.com.redR.JobApplication.job.JobRepository;
 import in.com.redR.JobApplication.job.JobService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,12 +15,15 @@ import java.util.Optional;
 
 @Service
 public class JobServiceImpl implements JobService {
+
    JobRepository jobRepository;
    CompanyService companyService;
+
    public JobServiceImpl(JobRepository jobRepository, CompanyService companyService){
        this.companyService=companyService;
        this.jobRepository=jobRepository;
    }
+
     @Override
     public List<Job> findAll() {
        return jobRepository.findAll();
@@ -66,4 +72,27 @@ public class JobServiceImpl implements JobService {
             }
         return false;
         }
+
+    @Override
+    public List<Job> getAllJobsWithPagination(int page, int size) {
+        Page<Job> jobPage=jobRepository.findAll(PageRequest.of(page, size));
+        List<Job> list=jobPage.getContent();
+        return list;
+    }
+
+    @Override
+    public List<Job> getJobByIdGreaterThanEqual(Long id){
+       List<Job> list=jobRepository.getJobByIdGreaterThanEqual(id);
+       return list;
+    }
+
+    @Override
+    public List<Job> getJobOrderByLocationDesc() {
+        return jobRepository.findByOrderByLocationDesc();
+    }
+
+    @Override
+    public Page<Job> getAllJobs(Pageable pageable) {
+        return jobRepository.findAll(pageable);
+    }
 }
